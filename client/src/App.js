@@ -16,7 +16,6 @@ function App() {
     const fetchDevices = async () => {
         try {
             const response = await axios.get('http://localhost:8000/devices');
-            // Extract the devices array from the response
             const devicesArray = response.data.devices || [];
             setDevices(devicesArray);
         } catch (error) {
@@ -27,12 +26,11 @@ function App() {
     // Add a new device
     const addDevice = async () => {
         try {
-            // Ensure status is set to a valid value
             const deviceStatus = status || 'Unknown'; // Default to 'Unknown' if status is empty
             const response = await axios.post('http://localhost:8000/devices', {
                 name,
                 ip,
-                DeviceStatus: deviceStatus, // Use DeviceStatus here to match the schema
+                DeviceStatus: deviceStatus,
             });
 
             // Update the devices state with the new device
@@ -47,14 +45,27 @@ function App() {
         }
     };
 
+    // Sync devices from GNS3
+    const syncDevices = async () => {
+        try {
+            const projectId = "2855984f-e7c5-4ff1-8b81-6b0b33a98b76"; // Project ID for souma
+            const response = await axios.post('http://localhost:8000/api/gns3/sync-devices', {
+                projectId,
+            });
+            alert(response.data.message);
+            fetchDevices(); // Refresh the devices list
+        } catch (error) {
+            console.error('Error syncing devices:', error);
+            alert('Failed to sync devices. Please try again.');
+        }
+    };
+
     // Function to determine the button color based on status
     const getStatusButton = (status) => {
-        // Handle undefined or null status
         if (!status) {
             return <button style={{ backgroundColor: 'gray', color: 'white', border: 'none', borderRadius: '4px', padding: '5px 10px' }}>Unknown</button>;
         }
 
-        // Convert status to lowercase for comparison
         switch (status.toLowerCase()) {
             case 'active':
                 return <button style={{ backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '4px', padding: '5px 10px' }}>Active</button>;
@@ -103,6 +114,17 @@ function App() {
                     style={{ padding: '5px 10px', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Add Device
+                </button>
+            </div>
+
+            {/* Button to sync devices from GNS3 */}
+            <div style={{ marginBottom: '20px' }}>
+                <h2>Sync Devices from GNS3</h2>
+                <button
+                    onClick={syncDevices}
+                    style={{ padding: '5px 10px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                >
+                    Sync Devices
                 </button>
             </div>
 
