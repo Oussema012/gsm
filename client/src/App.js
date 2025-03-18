@@ -71,7 +71,6 @@ function DeviceList() {
     );
 }
 
-
 function App() {
     return (
         <Router>

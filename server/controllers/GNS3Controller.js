@@ -1,6 +1,5 @@
-// controllers/GNS3Controller.js
 const Device = require("../models/Device");
-const { fetchDevicesFromGNS3 } = require("../services/gns3Service");
+const { fetchDevicesFromGNS3, getDeviceDetailsFromGNS3 } = require("../services/gns3Service");
 
 const syncDevicesFromGNS3 = async (req, res) => {
     const { projectId } = req.body;
@@ -35,6 +34,7 @@ const syncDevicesFromGNS3 = async (req, res) => {
                     existingDevice.mtu = device.properties?.mtu || "1500";
                     return await existingDevice.save();
                 }
+
                 // Create a new device if not already present
                 const newDevice = new Device({
                     name: device.name,
@@ -47,6 +47,7 @@ const syncDevicesFromGNS3 = async (req, res) => {
                     rHostPort: device.properties?.rhost_port || "N/A",
                     mtu: device.properties?.mtu || "1500",
                 });
+
                 return await newDevice.save();
             })
         );
@@ -58,8 +59,24 @@ const syncDevicesFromGNS3 = async (req, res) => {
     }
 };
 
+// Fetch device details (show ip command)
+const getDeviceDetails = async (req, res) => {
+    const { projectId, nodeId } = req.params;
 
+    if (!projectId || !nodeId) {
+        return res.status(400).json({ message: "Project ID and Node ID are required" });
+    }
+
+    try {
+        const deviceDetails = await getDeviceDetailsFromGNS3(projectId, nodeId);
+        res.status(200).json({ message: "Device details fetched", details: deviceDetails });
+    } catch (error) {
+        console.error("Error fetching device details:", error);
+        res.status(500).json({ message: "Error fetching device details", error: error.message });
+    }
+};
 
 module.exports = {
     syncDevicesFromGNS3,
-}; 
+    getDeviceDetails,  // Export the new function
+};
