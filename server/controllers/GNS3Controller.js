@@ -12,17 +12,24 @@ const syncDevicesFromGNS3 = async (req, res) => {
     try {
         console.log("Fetching devices from GNS3...");
         const gns3Devices = await fetchDevicesFromGNS3(projectId);
+        
+        if (!gns3Devices || gns3Devices.length === 0) {
+            return res.status(404).json({ message: "No devices found in GNS3 project" });
+        }
+
         console.log("Devices fetched from GNS3:", gns3Devices);
 
-        console.log("Saving devices to MongoDB...");
+        // Saving or updating devices in MongoDB
         const savedDevices = await Promise.all(
             gns3Devices.map(async (device) => {
                 const existingDevice = await Device.findOne({ name: device.name });
                 if (existingDevice) {
+                    // Update existing device details
                     existingDevice.ip = device.properties?.ip_address || "N/A";
                     existingDevice.DeviceStatus = device.status || "Unknown";
                     return await existingDevice.save();
                 }
+                // Create a new device if not already present
                 const newDevice = new Device({
                     name: device.name,
                     ip: device.properties?.ip_address || "N/A",
@@ -39,6 +46,7 @@ const syncDevicesFromGNS3 = async (req, res) => {
         res.status(500).json({ message: "Error syncing devices", error: error.message });
     }
 };
+
 
 module.exports = {
     syncDevicesFromGNS3,

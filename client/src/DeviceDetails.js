@@ -8,8 +8,16 @@ const DeviceDetails = () => {
 
     useEffect(() => {
         axios.get(`http://localhost:8000/device/${deviceId}`)
-            .then((response) => setDevice(response.data))
-            .catch((error) => console.error('Error fetching device details:', error));
+            .then((response) => {
+                if (response.data.device) {
+                    setDevice(response.data.device);
+                } else {
+                    console.error('Device not found');
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching device details:', error);
+            });
     }, [deviceId]);
 
     if (!device) return <p>Loading...</p>;
@@ -24,5 +32,6 @@ const DeviceDetails = () => {
         </div>
     );
 };
+
 
 export default DeviceDetails;
