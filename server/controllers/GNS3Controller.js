@@ -1,6 +1,7 @@
 const Device = require("../models/Device");
 const { fetchDevicesFromGNS3, getDeviceDetailsFromGNS3 } = require("../services/gns3Service");
 
+// Sync GNS3 devices
 const syncDevicesFromGNS3 = async (req, res) => {
     const { projectId } = req.body;
 

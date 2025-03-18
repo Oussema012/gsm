@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const GNS3Controller = require("../controllers/GNS3Controller");
+const GNS3Controller = require("../controllers/DeviceController"); // Import the controller
 
 // Sync GNS3 devices
 router.post("/sync-devices", GNS3Controller.syncDevicesFromGNS3);

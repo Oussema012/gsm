@@ -6,6 +6,7 @@ module.exports=(app)=>{
     app.get("/device/:id",deviceController.getDeviceById),
     app.put("/devices/:id",deviceController.updateDevice),
     app.delete("/devices/:id",deviceController.deleteDevice)
+    app.get("device/:projectId/:nodeId",deviceController.getDeviceDetails)
 
 
 }
