@@ -12,7 +12,7 @@ const syncDevicesFromGNS3 = async (req, res) => {
     try {
         console.log("Fetching devices from GNS3...");
         const gns3Devices = await fetchDevicesFromGNS3(projectId);
-        
+
         if (!gns3Devices || gns3Devices.length === 0) {
             return res.status(404).json({ message: "No devices found in GNS3 project" });
         }
@@ -27,6 +27,12 @@ const syncDevicesFromGNS3 = async (req, res) => {
                     // Update existing device details
                     existingDevice.ip = device.properties?.ip_address || "N/A";
                     existingDevice.DeviceStatus = device.status || "Unknown";
+                    existingDevice.macAddress = device.properties?.mac_address || "N/A";
+                    existingDevice.gateway = device.properties?.gateway || "N/A";
+                    existingDevice.dns = device.properties?.dns || "N/A";
+                    existingDevice.lPort = device.properties?.lport || "N/A";
+                    existingDevice.rHostPort = device.properties?.rhost_port || "N/A";
+                    existingDevice.mtu = device.properties?.mtu || "1500";
                     return await existingDevice.save();
                 }
                 // Create a new device if not already present
@@ -34,11 +40,16 @@ const syncDevicesFromGNS3 = async (req, res) => {
                     name: device.name,
                     ip: device.properties?.ip_address || "N/A",
                     DeviceStatus: device.status || "Unknown",
+                    macAddress: device.properties?.mac_address || "N/A",
+                    gateway: device.properties?.gateway || "N/A",
+                    dns: device.properties?.dns || "N/A",
+                    lPort: device.properties?.lport || "N/A",
+                    rHostPort: device.properties?.rhost_port || "N/A",
+                    mtu: device.properties?.mtu || "1500",
                 });
                 return await newDevice.save();
             })
         );
-        console.log("Devices saved to MongoDB:", savedDevices);
 
         res.status(200).json({ message: "Devices synced successfully", devices: savedDevices });
     } catch (error) {
@@ -46,6 +57,7 @@ const syncDevicesFromGNS3 = async (req, res) => {
         res.status(500).json({ message: "Error syncing devices", error: error.message });
     }
 };
+
 
 
 module.exports = {

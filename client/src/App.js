@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import DeviceDetails from './DeviceDetails';
-
 function DeviceList() {
     const [devices, setDevices] = useState([]);
-    
+
     useEffect(() => {
         fetchDevices();
     }, []);
@@ -47,6 +46,8 @@ function DeviceList() {
                         <th>Name</th>
                         <th>IP Address</th>
                         <th>Status</th>
+                        <th>MAC Address</th>
+                        <th>Gateway</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -56,6 +57,8 @@ function DeviceList() {
                             <td>{device.name}</td>
                             <td>{device.ip || "N/A"}</td>
                             <td>{device.DeviceStatus}</td>
+                            <td>{device.macAddress || "N/A"}</td>
+                            <td>{device.gateway || "N/A"}</td>
                             <td>
                                 <Link to={`/device/${device._id}`} style={{ color: '#007bff', textDecoration: 'none' }}>View Details</Link>
                             </td>
@@ -67,15 +70,5 @@ function DeviceList() {
     );
 }
 
-function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<DeviceList />} />
-                <Route path="/device/:deviceId" element={<DeviceDetails />} />
-            </Routes>
-        </Router>
-    );
-}
 
 export default App;
