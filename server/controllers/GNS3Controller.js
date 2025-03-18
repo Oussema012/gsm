@@ -42,4 +42,4 @@ const syncDevicesFromGNS3 = async (req, res) => {
 
 module.exports = {
     syncDevicesFromGNS3,
-};
+}; 
