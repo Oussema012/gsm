@@ -1,4 +1,3 @@
-// services/gns3Service.js
 const axios = require("axios");
 
 const GNS3_API_URL = "http://localhost:3080/v2"; // Replace with your GNS3 server URL

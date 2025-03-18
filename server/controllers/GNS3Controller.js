@@ -17,6 +17,12 @@ const syncDevicesFromGNS3 = async (req, res) => {
         console.log("Saving devices to MongoDB...");
         const savedDevices = await Promise.all(
             gns3Devices.map(async (device) => {
+                const existingDevice = await Device.findOne({ name: device.name });
+                if (existingDevice) {
+                    existingDevice.ip = device.properties?.ip_address || "N/A";
+                    existingDevice.DeviceStatus = device.status || "Unknown";
+                    return await existingDevice.save();
+                }
                 const newDevice = new Device({
                     name: device.name,
                     ip: device.properties?.ip_address || "N/A",

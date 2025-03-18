@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// define a schema 
+// define a schema or structure
 const DeviceSchema =new mongoose.Schema(
     {
         name : String,

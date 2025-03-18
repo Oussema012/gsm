@@ -5,4 +5,6 @@ const GNS3Controller = require("../controllers/GNS3Controller");
 
 router.post("/sync-devices", GNS3Controller.syncDevicesFromGNS3);
 
+
 module.exports = router;
+//define a route to synchronize devices from gns3 to mongodb
