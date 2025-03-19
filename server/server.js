@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -16,10 +15,7 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Include device routes
-require("./routes/device.routes")(app);
-
-// Include GNS3 routes
+// Import and use the GNS3 routes
 const gns3Routes = require("./routes/gns3.routes");
 app.use("/api/gns3", gns3Routes);
 
